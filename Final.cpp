@@ -11,19 +11,114 @@
 //well your code handles it.
 
 #include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <iomanip>
+#include <limits>
+using namespace std;
 
-int main()
-{
-    std::cout << "Hello World!\n";
+//File Reader
+vector<double> readNumFromFile(const string& fileName) {
+    ifstream inputFile(fileName);
+    vector<double> numbers;
+
+    cout << "attempting to open:" << fileName << endl;
+
+    if (!inputFile.is_open()) {
+        cout << "Error File could not open" << fileName << endl;
+        return numbers;
+
+    }
+    double number;
+    while (inputFile >> number) {
+        numbers.push_back(number);
+    }
+
+    //Error Check
+    if (inputFile.fail() && !inputFile.eof()) {
+        cout << "Warning file does not contain numeric data." << endl;
+    }
+    cout << "File could be read" << numbers.size() << endl;
+    inputFile.close();
+    return numbers;
+}
+//Minium value vector 
+double findMin(const vector<double>& numbers) {
+    double min =
+        numeric_limits<double>::max();
+
+    for (double num : numbers) {
+        if (num < min) {
+            min = num;
+        }
+    }
+    return min;
+}
+//Maxium Value
+double findMax(const vector<double>& numbers) {
+    double max =
+        numeric_limits<double>::lowest();
+    for (double num : numbers) {
+        if (num > max) {
+            max = num;
+        }
+    }
+    return max;
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+//total 
+double calculateTotal(const vector<double>& numbers) {
+    double total = 0.0;
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+    for (double num : numbers) {
+        total += num;
+    }
+    return total;
+}
+
+// Average 
+double calculateAve(const vector<double>& numbers) {
+    if (numbers.empty()) {
+        return 0.0;
+    }
+    return calculateTotal(numbers) / numbers.size();
+}
+
+//Results
+void displayResults(double min, double max, double total, double average) {
+    cout << fixed << setprecision(2);
+    cout << "Statisic Results:" << endl;
+    cout << "Minimum Number:" << min << endl;
+    cout << "Maximum Number:" << max << endl;
+    cout << "Total:" << total << endl;
+    cout << "Average:" << average << endl;
+}
+int main()
+{
+    cout << "Number File Statistics Program" << endl;
+
+    //File Name
+    string fileName;
+    cout << "Enter File Name (numbers.txt):"; 
+    cin >> fileName;
+
+    //Read Numbers from file 
+    vector<double> numbers = readNumFromFile(fileName);
+
+    if (numbers.empty()) {
+        cout << "Error there are no vaild numbers found in the file." << endl;
+        return 1;
+    }
+
+    //Statisitcs 
+    double min = findMin(numbers);
+    double max = findMax(numbers);
+    double total = calculateTotal(numbers);
+    double average = calculateAve(numbers);
+
+    //Results 
+    displayResults(min, max, total, average);
+    return 0;
+}
+
