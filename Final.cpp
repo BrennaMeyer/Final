@@ -101,7 +101,7 @@ int main()
     //File Name
     string fileName;
     cout << "Enter File Name (numbers.txt):"; 
-    cin >> fileName;
+    getline (cin, fileName);
 
     //Read Numbers from file 
     vector<double> numbers = readNumFromFile(fileName);
